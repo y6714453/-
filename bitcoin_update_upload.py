@@ -7,7 +7,7 @@ import os
 import time
 
 # 🟡 טוקן של ימות המשיח
-token = '606kXpIGhaZmkxLd'
+token = 'Hfz3F7QX6lQngVrl'
 
 # 🔄 שליפת נתוני ביטקוין
 def get_bitcoin_text():
