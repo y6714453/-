@@ -3,13 +3,12 @@ import asyncio
 import subprocess
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-import os
 import time
 
-# 🟡 טוקן עדכני של ימות
-token = '606kXpIGhaZmkxLd'
+# 🟡 טוקן מעודכן של ימות המשיח
+token = 'qIml3BbCzeY35Cnq'
 
-# 🔄 שליפת נתוני ביטקוין מ-Yahoo Finance
+# 🔄 שליפת טקסט נתונים מ-Yahoo
 def get_bitcoin_text():
     try:
         url = "https://query1.finance.yahoo.com/v8/finance/chart/BTC-USD?range=6mo&interval=1d"
@@ -83,7 +82,7 @@ def get_bitcoin_text():
         print("❌ שגיאה בשליפת נתונים:", e)
         return "הביטקוין עומד כעת על נתון לא זמין."
 
-# 🟢 שמות הקבצים
+# 📁 שמות קבצים
 mp3_file = "btc_temp.mp3"
 wav_file = "M0000.wav"
 destination_path = '8/M0000.wav'
@@ -109,7 +108,7 @@ def convert_to_wav():
     ])
     print(f"✅ מוכן: {wav_file}")
 
-# 📤 העלאה לימות המשיח
+# 📤 העלאה לימות
 def upload_to_yemot():
     print("📤 מעלה לימות...")
     m = MultipartEncoder(
@@ -130,7 +129,7 @@ def upload_to_yemot():
         print("❌ שגיאה בהעלאה:")
         print(response.text)
 
-# 🧠 הרצה
+# ▶️ הפעלת התהליך
 async def main():
     text = get_bitcoin_text()
     print("📝 טקסט להקראה:", text)
