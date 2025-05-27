@@ -85,7 +85,7 @@ def get_bitcoin_text():
 # 📁 שמות קבצים
 mp3_file = "btc_temp.mp3"
 wav_file = "M0000.wav"
-destination_path = '8/M0000.wav'
+destination_path = 'ivr2:/8/M0000.wav'
 
 # 🎙 יצירת MP3
 async def create_mp3(text):
