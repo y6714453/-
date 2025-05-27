@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "name": "update_bitcoin_job",
+      "command": "python bitcoin_update_upload.py",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
