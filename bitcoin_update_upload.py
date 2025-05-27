@@ -12,8 +12,8 @@ TEXT_TO_SPEAK = """
 
 MP3_FILENAME = "btc_temp.mp3"
 WAV_FILENAME = "M0000.wav"
-YEMOT_PATH = f"8/{WAV_FILENAME}"  # שלוחה 8 לדוגמה
-YEMOT_TOKEN = "yS6TJRLU8TyNRGgO"  # ← כאן תכניס תמיד את הטוקן התקף
+YEMOT_PATH = f"8/{WAV_FILENAME}"  # ← כאן קובץ יועלה לשלוחה 8
+YEMOT_TOKEN = "606kXpIGhaZmkxLd"  # ← הטוקן החדש
 
 # === פונקציה: יצירת MP3 ===
 def generate_mp3():
