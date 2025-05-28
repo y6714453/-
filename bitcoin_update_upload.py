@@ -102,13 +102,13 @@ items = [
 ]
 
 # 📤 העלאה לימות
-def upload_to_yemot(wav_path, target_path):
-    print("📤 מעלה לימות...")
+def upload_to_yemot(wav_path, target_path, symbol):
+    print(f"📤 מעלה לימות ({symbol})...")
     m = MultipartEncoder(
         fields={
             'token': token,
-            'path': target_path + "M0000.wav",
-            'upload': ("M0000.wav", open(wav_path, 'rb'), 'audio/wav')
+            'path': target_path + f"{symbol}.wav",
+            'upload': (f"{symbol}.wav", open(wav_path, 'rb'), 'audio/wav')
         }
     )
     response = requests.post(
@@ -117,7 +117,7 @@ def upload_to_yemot(wav_path, target_path):
         headers={'Content-Type': m.content_type}
     )
     if response.status_code == 200 and 'OK' in response.text:
-        print("✅ הועלה בהצלחה!")
+        print(f"✅ הועלה בהצלחה ({symbol})!")
     else:
         print("❌ שגיאה בהעלאה:", response.text)
 
@@ -145,12 +145,13 @@ def convert_to_wav(mp3_path, wav_path):
 # ▶️ הפעלת התהליך
 async def main():
     for item in items:
-        text = get_text(item["name"], item["symbol"], item["type"])
+        symbol = item["symbol"]
+        text = get_text(item["name"], symbol, item["type"])
         print(f"📝 טקסט עבור {item['name']}:\n{text}\n")
-        mp3_file = "M0000.mp3"
-        wav_file = "M0000.wav"
+        mp3_file = f"{symbol}.mp3"
+        wav_file = f"{symbol}.wav"
         await create_mp3(text, mp3_file)
         convert_to_wav(mp3_file, wav_file)
-        upload_to_yemot(wav_file, item["target_path"])
+        upload_to_yemot(wav_file, item["target_path"], symbol)
 
 asyncio.run(main())
