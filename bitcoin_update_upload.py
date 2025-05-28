@@ -2,18 +2,30 @@ import edge_tts
 import asyncio
 import subprocess
 import requests
-import json
+import os
 import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-# 🟡 טוקן קבוע
+# 🟡 טוקן קבוע של ימות
 token = "2yqvFAr7E9rVPGyk"
 
-# 📁 קריאה מקובץ JSON
-with open("symbols.json", "r", encoding="utf-8") as f:
-    symbols_data = json.load(f)
+# 📄 הגדרת הנכסים ישירות בתוך הקוד
+symbols_data = [
+    {
+        "name": "בִּיטְקוֹיְן",
+        "symbol": "BTC-USD",
+        "type": "crypto",
+        "target_path": "ivr2:/8/"
+    },
+    {
+        "name": "אַנְבִּידִיָה",
+        "symbol": "NVDA",
+        "type": "stock_us",
+        "target_path": "ivr2:/7/"
+    }
+]
 
-# 📚 פונקציית עזר להמרת מספר למילים (נקבה, ללא זכר)
+# 🧠 המרה של מספרים למילים בלשון נקבה
 def number_to_words(n):
     if isinstance(n, float):
         whole, frac = str(n).split(".")
@@ -33,8 +45,8 @@ def number_to_words(n):
         return f"{hundreds[n // 100]} ו{number_to_words(rem)}" if rem else f"{hundreds[n // 100]}"
     return str(n)
 
-# 🧠 ניסוח טקסט מותאם לפי סוג
-def generate_text(name, symbol, type_, current_price, price_day, price_week, price_year, year_high):
+# 🧠 ניסוח טקסט לפי סוג הנכס
+def generate_text(name, type_, current_price, price_day, price_week, price_year, year_high):
     def format_change(curr, prev):
         if prev is None or prev == 0:
             return "אין נתון זמין"
@@ -54,16 +66,12 @@ def generate_text(name, symbol, type_, current_price, price_day, price_week, pri
 
     if type_ == "crypto":
         return f"ה{ name } נסחר בשער של {current_txt} דולר. {change_day}. {change_week}. {change_year}. {dist_txt}"
-    elif type_ == "index":
-        return f"מדד ה{ name } עומד כעת על {current_txt} נקודות. {change_day}. {change_week}. {change_year}. {dist_txt}"
     elif type_ == "stock_us":
         return f"מניית { name } נסחרת כעת בשווי של {current_txt} דולר. {change_day}. {change_week}. {change_year}. {dist_txt}"
-    elif type_ == "stock_il":
-        return f"מניית { name } נסחרת כעת בשווי של {current_txt} שקלים חדשים. {change_day}. {change_week}. {change_year}. {dist_txt}"
     else:
         return f"{ name } עומד על {current_txt}. {change_day}. {change_week}. {change_year}. {dist_txt}"
 
-# 🔁 שליפת נתונים ליחידה אחת
+# 🔄 שליפת נתוני שוק
 def get_data(symbol):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=6mo&interval=1d"
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -128,7 +136,7 @@ async def main():
             path = item["target_path"]
 
             current, day, week, year, high = get_data(symbol)
-            text = generate_text(name, symbol, type_, current, day, week, year, high)
+            text = generate_text(name, type_, current, day, week, year, high)
 
             mp3_file = f"{symbol}.mp3"
             wav_file = f"{symbol}.wav"
