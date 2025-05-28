@@ -1,102 +1,14 @@
-{
-  "AAPL": {
-    "name": "אפל",
-    "branch": "8",
-    "type": "stock_us"
-  },
-  "NVDA": {
+[
+  {
     "name": "אנבידיה",
-    "branch": "8",
-    "type": "stock_us"
+    "symbol": "NVDA",
+    "type": "stock_us",
+    "target_path": "ivr2:/8/"
   },
-  "TSLA": {
-    "name": "טסלה",
-    "branch": "8",
-    "type": "stock_us"
-  },
-  "META": {
-    "name": "מטא",
-    "branch": "8",
-    "type": "stock_us"
-  },
-  "INTC": {
-    "name": "אינטל",
-    "branch": "8",
-    "type": "stock_us"
-  },
-  "MSFT": {
-    "name": "מייקרוסופט",
-    "branch": "8",
-    "type": "stock_us"
-  },
-  "TA35.TA": {
-    "name": "תל אביב 35",
-    "branch": "8",
-    "type": "index"
-  },
-  "DJI": {
-    "name": "דאו ג'ונס",
-    "branch": "8",
-    "type": "index"
-  },
-  "IXIC": {
-    "name": "נאסד״ק",
-    "branch": "8",
-    "type": "index"
-  },
-  "BTC-USD": {
-    "name": "הביטקוין",
-    "branch": "8",
-    "type": "crypto"
-  },
-  "ETH-USD": {
-    "name": "האתריום",
-    "branch": "8",
-    "type": "crypto"
-  },
-  "TRUMP-USD": {
-    "name": "מטבע טראמפ",
-    "branch": "8",
-    "type": "crypto"
-  },
-  "CL=F": {
-    "name": "נפט",
-    "branch": "8",
-    "type": "energy"
-  },
-  "GC=F": {
-    "name": "זהב",
-    "branch": "8",
-    "type": "precious_metal"
-  },
-  "SI=F": {
-    "name": "כסף",
-    "branch": "8",
-    "type": "precious_metal"
-  },
-  "CORN=F": {
-    "name": "תירס",
-    "branch": "8",
-    "type": "agriculture"
-  },
-  "USDILS=X": {
-    "name": "הדולר",
-    "branch": "8",
-    "type": "forex"
-  },
-  "EURILS=X": {
-    "name": "האירו",
-    "branch": "8",
-    "type": "forex"
-  },
-  "XLV": {
-    "name": "סקטור הבריאות",
-    "branch": "8",
-    "type": "sector"
-  },
-  "XLE": {
-    "name": "סקטור האנרגיה",
-    "branch": "8",
-    "type": "sector"
+  {
+    "name": "אפל",
+    "symbol": "AAPL",
+    "type": "stock_us",
+    "target_path": "ivr2:/7/"
   }
-}
+]
