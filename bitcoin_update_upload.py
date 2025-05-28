@@ -6,7 +6,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 import time
 
 # 🟡 טוקן מעודכן של ימות המשיח
-token = 'JVVvKGR02MlJuuc8'
+token = 'q6bdzrUNrd9RR4Th'
 
 # 🔄 שליפת טקסט נתונים מ-Yahoo
 def get_bitcoin_text():
