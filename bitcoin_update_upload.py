@@ -98,17 +98,16 @@ def get_text(name, symbol, type_):
 # 🧠 רשימת ניירות ערך (ישירות בתוך הקוד)
 items = [
     {"name": "ביטקוין", "symbol": "BTC-USD", "type": "קריפטו", "target_path": "ivr2:/8/"},
-    {"name": "אנבידיה", "symbol": "NVDA", "type": "stock_us", "target_path": "ivr2:/7/"}
 ]
 
 # 📤 העלאה לימות
-def upload_to_yemot(wav_path, target_path, symbol):
-    print(f"📤 מעלה לימות ({symbol})...")
+def upload_to_yemot(wav_path, target_path):
+    print(f"📤 מעלה לימות...")
     m = MultipartEncoder(
         fields={
             'token': token,
-            'path': target_path + f"{symbol}.wav",
-            'upload': (f"{symbol}.wav", open(wav_path, 'rb'), 'audio/wav')
+            'path': target_path + "000.wav",
+            'upload': ("000.wav", open(wav_path, 'rb'), 'audio/wav')
         }
     )
     response = requests.post(
@@ -117,7 +116,7 @@ def upload_to_yemot(wav_path, target_path, symbol):
         headers={'Content-Type': m.content_type}
     )
     if response.status_code == 200 and 'OK' in response.text:
-        print(f"✅ הועלה בהצלחה ({symbol})!")
+        print(f"✅ הועלה בהצלחה!")
     else:
         print("❌ שגיאה בהעלאה:", response.text)
 
@@ -145,13 +144,10 @@ def convert_to_wav(mp3_path, wav_path):
 # ▶️ הפעלת התהליך
 async def main():
     for item in items:
-        symbol = item["symbol"]
-        text = get_text(item["name"], symbol, item["type"])
+        text = get_text(item["name"], item["symbol"], item["type"])
         print(f"📝 טקסט עבור {item['name']}:\n{text}\n")
-        mp3_file = f"{symbol}.mp3"
-        wav_file = f"{symbol}.wav"
-        await create_mp3(text, mp3_file)
-        convert_to_wav(mp3_file, wav_file)
-        upload_to_yemot(wav_file, item["target_path"], symbol)
+        await create_mp3(text, "000.mp3")
+        convert_to_wav("000.mp3", "000.wav")
+        upload_to_yemot("000.wav", item["target_path"])
 
 asyncio.run(main())
