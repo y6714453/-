@@ -2,150 +2,155 @@ import edge_tts
 import asyncio
 import subprocess
 import requests
-import os
-import time
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import time
 
-# 🟡 טוקן קבוע של ימות
+# ✅ טוקן קבוע של ימות המשיח
 token = "2yqvFAr7E9rVPGyk"
 
-# 📄 הגדרת הנכסים ישירות בתוך הקוד
-symbols_data = [
-    {
-        "name": "בִּיטְקוֹיְן",
-        "symbol": "BTC-USD",
-        "type": "crypto",
-        "target_path": "ivr2:/8/"
-    },
-    {
-        "name": "אַנְבִּידִיָה",
-        "symbol": "NVDA",
-        "type": "stock_us",
-        "target_path": "ivr2:/7/"
-    }
+# 🔁 פונקציה לשליפת טקסט עבור נייר ערך
+def get_text(name, symbol, type_):
+    try:
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=6mo&interval=1d"
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers, timeout=10)
+        data = response.json()['chart']['result'][0]
+
+        current_price = data['meta']['regularMarketPrice']
+        year_high = data['meta'].get('fiftyTwoWeekHigh', None)
+        timestamps = data['timestamp']
+        prices = data['indicators']['quote'][0]['close']
+
+        now = time.time()
+
+        def closest_price(target):
+            for t, p in zip(reversed(timestamps), reversed(prices)):
+                if t <= target and p is not None:
+                    return p
+            return None
+
+        start_of_day = time.mktime(time.localtime(now)[:3] + (0, 0, 0, 0, 0, -1))
+        start_of_week = now - (time.localtime(now).tm_wday * 86400)
+        start_of_year = time.mktime(time.strptime(f"{time.localtime().tm_year}-01-01", "%Y-%m-%d"))
+
+        price_day = closest_price(start_of_day)
+        price_week = closest_price(start_of_week)
+        price_year = closest_price(start_of_year)
+
+        def format_change(current, previous):
+            if previous is None or previous == 0:
+                return "אין נתון זמין"
+            change = ((current - previous) / previous) * 100
+            sign = "עלייה" if change > 0 else "ירידה" if change < 0 else "שינוי אפסי"
+            abs_change = abs(change)
+            change_text = "אחוז" if round(abs_change, 2) == 1.00 else f"{abs_change:.2f}".replace(".", " נקודה ") + " אחוז"
+            return f"{sign} של {change_text}"
+
+        def spell_price(p):
+            p = round(p)
+            th = p // 1000
+            r = p % 1000
+            if th == 0:
+                return f"{r}"
+            elif th == 1:
+                return f"אלף ו{r}" if r else "אלף"
+            elif th == 2:
+                return f"אלפיים ו{r}" if r else "אלפיים"
+            else:
+                return f"{th} אלף ו{r}" if r else f"{th} אלף"
+
+        price_txt = spell_price(current_price)
+        change_day = format_change(current_price, price_day)
+        change_week = format_change(current_price, price_week)
+        change_year = format_change(current_price, price_year)
+
+        dist_txt = ""
+        if year_high:
+            diff = ((current_price - year_high) / year_high) * 100
+            abs_diff = abs(diff)
+            dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
+
+        if type_ == "קריפטו":
+            text = (
+                f"ה{ name } נסחר בשער של {price_txt} דולר. "
+                f"מאז תחילת היום נרשמה {change_day}. "
+                f"מתחילת השבוע נרשמה {change_week}. "
+                f"מתחילת השנה נרשמה {change_year}. "
+                f"המחיר הנוכחי רחוק מהשיא ב{dist_txt}."
+            )
+        elif type_ == "stock_us":
+            text = (
+                f"מניית { name } נסחרת כעת בשווי של {price_txt} דולר. "
+                f"מאז תחילת היום נרשמה {change_day}. "
+                f"מתחילת השבוע נרשמה {change_week}. "
+                f"מתחילת השנה נרשמה {change_year}. "
+                f"המחיר הנוכחי רחוק מהשיא ב{dist_txt}."
+            )
+        else:
+            text = f"{ name } עומד על {price_txt}."
+
+        return text
+
+    except Exception as e:
+        print(f"שגיאה עם {name} ({symbol}):", e)
+        return f"{name} – הנתון אינו זמין כרגע."
+
+# 🧠 רשימת ניירות ערך (ישירות בתוך הקוד)
+items = [
+    {"name": "ביטקוין", "symbol": "BTC-USD", "type": "קריפטו", "target_path": "ivr2:/8/"},
+    {"name": "אנבידיה", "symbol": "NVDA", "type": "stock_us", "target_path": "ivr2:/7/"}
 ]
 
-# 🧠 המרה של מספרים למילים בלשון נקבה
-def number_to_words(n):
-    if isinstance(n, float):
-        whole, frac = str(n).split(".")
-        return f"{number_to_words(int(whole))} נקודה {number_to_words(int(frac))}"
-    words = {
-        0: "אפס", 1: "אחת", 2: "שתיים", 3: "שלוש", 4: "ארבע", 5: "חמש",
-        6: "שש", 7: "שבע", 8: "שמונה", 9: "תשע", 10: "עשר", 11: "אחת עשרה", 12: "שתים עשרה"
-    }
-    if n in words:
-        return words[n]
-    if n < 100:
-        tens = ["", "", "עשרים", "שלושים", "ארבעים", "חמישים", "שישים", "שבעים", "שמונים", "תשעים"]
-        return f"{tens[n // 10]} ו{words[n % 10]}" if n % 10 != 0 else f"{tens[n // 10]}"
-    if n < 1000:
-        hundreds = ["", "מאה", "מאתיים", "שלוש מאות", "ארבע מאות", "חמש מאות", "שש מאות", "שבע מאות", "שמונה מאות", "תשע מאות"]
-        rem = n % 100
-        return f"{hundreds[n // 100]} ו{number_to_words(rem)}" if rem else f"{hundreds[n // 100]}"
-    return str(n)
-
-# 🧠 ניסוח טקסט לפי סוג הנכס
-def generate_text(name, type_, current_price, price_day, price_week, price_year, year_high):
-    def format_change(curr, prev):
-        if prev is None or prev == 0:
-            return "אין נתון זמין"
-        change = ((curr - prev) / prev) * 100
-        sign = "עלייה" if change > 0 else "ירידה" if change < 0 else "שינוי אפסי"
-        return f"{sign} של {number_to_words(round(abs(change), 2))} אחוז"
-
-    current_txt = number_to_words(round(current_price))
-    change_day = format_change(current_price, price_day)
-    change_week = format_change(current_price, price_week)
-    change_year = format_change(current_price, price_year)
-
-    dist_txt = ""
-    if year_high:
-        diff = ((current_price - year_high) / year_high) * 100
-        dist_txt = f"המחיר הנוכחי רחוק מהשיא ב{number_to_words(round(abs(diff), 2))} אחוז."
-
-    if type_ == "crypto":
-        return f"ה{ name } נסחר בשער של {current_txt} דולר. {change_day}. {change_week}. {change_year}. {dist_txt}"
-    elif type_ == "stock_us":
-        return f"מניית { name } נסחרת כעת בשווי של {current_txt} דולר. {change_day}. {change_week}. {change_year}. {dist_txt}"
-    else:
-        return f"{ name } עומד על {current_txt}. {change_day}. {change_week}. {change_year}. {dist_txt}"
-
-# 🔄 שליפת נתוני שוק
-def get_data(symbol):
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=6mo&interval=1d"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    r = requests.get(url, headers=headers, timeout=10)
-    data = r.json()['chart']['result'][0]
-    current = data['meta']['regularMarketPrice']
-    high = data['meta'].get('fiftyTwoWeekHigh', None)
-    times = data['timestamp']
-    prices = data['indicators']['quote'][0]['close']
-
-    now = time.time()
-    def closest(t):
-        for ts, pr in zip(reversed(times), reversed(prices)):
-            if ts <= t and pr is not None:
-                return pr
-        return None
-
-    sod = time.mktime(time.localtime(now)[:3] + (0, 0, 0, 0, 0, -1))
-    sow = now - (time.localtime(now).tm_wday * 86400)
-    soy = time.mktime(time.strptime(f"{time.localtime().tm_year}-01-01", "%Y-%m-%d"))
-
-    return current, closest(sod), closest(sow), closest(soy), high
-
-# 🎙 יצירת MP3
-async def create_mp3(text, filename):
-    tts = edge_tts.Communicate(text, "he-IL-AvriNeural")
-    await tts.save(filename)
-
-# 🎛 המרה ל-WAV
-def convert_to_wav(mp3_path, wav_path):
-    subprocess.run([
-        "ffmpeg", "-y", "-i", mp3_path,
-        "-ac", "1", "-ar", "8000", "-sample_fmt", "s16", wav_path
-    ])
-
-# ⬆️ העלאה לימות המשיח
+# 📤 העלאה לימות
 def upload_to_yemot(wav_path, target_path):
+    print("📤 מעלה לימות...")
     m = MultipartEncoder(
         fields={
             'token': token,
-            'path': target_path + os.path.basename(wav_path),
-            'upload': (os.path.basename(wav_path), open(wav_path, 'rb'), 'audio/wav')
+            'path': target_path + "M0000.wav",
+            'upload': ("M0000.wav", open(wav_path, 'rb'), 'audio/wav')
         }
     )
-    r = requests.post(
+    response = requests.post(
         'https://www.call2all.co.il/ym/api/UploadFile',
         data=m,
         headers={'Content-Type': m.content_type}
     )
-    if r.status_code == 200 and 'OK' in r.text:
-        print(f"✅ הועלה בהצלחה: {os.path.basename(wav_path)}")
+    if response.status_code == 200 and 'OK' in response.text:
+        print("✅ הועלה בהצלחה!")
     else:
-        print(f"❌ שגיאה בהעלאה ({os.path.basename(wav_path)}):", r.text)
+        print("❌ שגיאה בהעלאה:", response.text)
 
-# ▶️ ריצה כוללת
+# 🎙 יצירת MP3
+async def create_mp3(text, filename):
+    print("🎙️ מייצר MP3...")
+    tts = edge_tts.Communicate(text, "he-IL-AvriNeural")
+    await tts.save(filename)
+    print("✅ MP3 נוצר:", filename)
+
+# 🎛 המרה ל-WAV
+def convert_to_wav(mp3_path, wav_path):
+    print("🔁 ממיר ל-WAV...")
+    subprocess.run([
+        "ffmpeg",
+        "-y",
+        "-i", mp3_path,
+        "-ac", "1",
+        "-ar", "8000",
+        "-sample_fmt", "s16",
+        wav_path
+    ])
+    print("✅ WAV מוכן:", wav_path)
+
+# ▶️ הפעלת התהליך
 async def main():
-    for item in symbols_data:
-        try:
-            name = item["name"]
-            symbol = item["symbol"]
-            type_ = item["type"]
-            path = item["target_path"]
-
-            current, day, week, year, high = get_data(symbol)
-            text = generate_text(name, type_, current, day, week, year, high)
-
-            mp3_file = f"{symbol}.mp3"
-            wav_file = f"{symbol}.wav"
-
-            print(f"🎙️ יוצר עבור {name} ({symbol})")
-            await create_mp3(text, mp3_file)
-            convert_to_wav(mp3_file, wav_file)
-            upload_to_yemot(wav_file, path)
-        except Exception as e:
-            print(f"⚠️ שגיאה עם {item['name']} ({item['symbol']}):", e)
+    for item in items:
+        text = get_text(item["name"], item["symbol"], item["type"])
+        print(f"📝 טקסט עבור {item['name']}:\n{text}\n")
+        mp3_file = "M0000.mp3"
+        wav_file = "M0000.wav"
+        await create_mp3(text, mp3_file)
+        convert_to_wav(mp3_file, wav_file)
+        upload_to_yemot(wav_file, item["target_path"])
 
 asyncio.run(main())
