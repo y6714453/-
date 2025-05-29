@@ -26,8 +26,8 @@ def upload_to_yemot(wav_path, target_path, token):
         m = MultipartEncoder(
             fields={
                 'token': token,
-                'path': target_path + os.path.basename(wav_path),
-                'upload': (os.path.basename(wav_path), open(wav_path, 'rb'), 'audio/wav')
+                'path': target_path + "000.wav",
+                'upload': ("000.wav", open(wav_path, 'rb'), 'audio/wav')
             }
         )
         response = requests.post(
@@ -123,7 +123,7 @@ def get_text(name, symbol, type_):
 
 # 🎙 יצירת MP3
 async def create_mp3(text, filename):
-    print(f"🎙️ יוצר MP3 עבור {filename}...")
+    print(f"🎙️ יוצר MP3...")
     tts = edge_tts.Communicate(text, "he-IL-AvriNeural")
     await tts.save(f"{filename}.mp3")
 
@@ -146,10 +146,8 @@ async def main():
 
     for item in items:
         text = get_text(item["name"], item["symbol"], item["type"])
-        mp3_file = f"{item['symbol']}.mp3"
-        wav_file = f"{item['symbol']}.wav"
-        await create_mp3(text, item["symbol"])
-        convert_to_wav(mp3_file, wav_file)
-        upload_to_yemot(wav_file, item["target_path"], token)
+        await create_mp3(text, "000")
+        convert_to_wav("000.mp3", "000.wav")
+        upload_to_yemot("000.wav", item["target_path"], token)
 
 asyncio.run(main())
