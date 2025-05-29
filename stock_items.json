@@ -1,8 +1,4 @@
-import json
-
-data = [
-
-  # 🔵 מדדים עולמיים וישראליים
+[
   {"symbol": "^GSPC", "name": "אס אנד פי 500", "type": "מדד", "destination": "11/1"},
   {"symbol": "^NDX", "name": "נאסדק 100", "type": "מדד", "destination": "11/2"},
   {"symbol": "^DJI", "name": "דאו ג'ונס", "type": "מדד", "destination": "11/3"},
@@ -14,7 +10,6 @@ data = [
   {"symbol": "^FTSE", "name": "פוטסי 100", "type": "מדד", "destination": "11/9"},
   {"symbol": "^STOXX50E", "name": "יורוסטוקס 50", "type": "מדד", "destination": "11/10"},
 
-  # 🟢 סקטורים
   {"symbol": "^SP500-35", "name": "בריאות", "type": "מדד", "destination": "12/1"},
   {"symbol": "^SP500-20", "name": "חומרים בסיסיים", "type": "מדד", "destination": "12/2"},
   {"symbol": "^SP500-55", "name": "תעשייה", "type": "מדד", "destination": "12/3"},
@@ -27,7 +22,6 @@ data = [
   {"symbol": "^SP500-40", "name": "תקשורת", "type": "מדד", "destination": "12/10"},
   {"symbol": "^SP500-15", "name": "שירותים לצרכן", "type": "מדד", "destination": "12/11"},
 
-  # 🔴 מניות פופולריות לדוגמה
   {"symbol": "AAPL", "name": "אפל", "type": "מניה אמריקאית", "destination": "13/1"},
   {"symbol": "NVDA", "name": "אנבידיה", "type": "מניה אמריקאית", "destination": "13/2"},
   {"symbol": "TSLA", "name": "טסלה", "type": "מניה אמריקאית", "destination": "13/3"},
@@ -39,7 +33,6 @@ data = [
   {"symbol": "NFLX", "name": "נטפליקס", "type": "מניה אמריקאית", "destination": "13/9"},
   {"symbol": "INTC", "name": "אינטל", "type": "מניה אמריקאית", "destination": "13/10"},
 
-  # 🟣 קריפטו
   {"symbol": "BTC-USD", "name": "ביטקוין", "type": "קריפטו", "destination": "14/1"},
   {"symbol": "ETH-USD", "name": "אתריום", "type": "קריפטו", "destination": "14/2"},
   {"symbol": "TRUMP-USD", "name": "טראמפ קוין", "type": "קריפטו", "destination": "14/3"},
@@ -49,20 +42,15 @@ data = [
   {"symbol": "DOGE-USD", "name": "דוגקוין", "type": "קריפטו", "destination": "14/7"},
   {"symbol": "AVAX-USD", "name": "אוואלאנש", "type": "קריפטו", "destination": "14/8"},
 
-  # 🔶 מט"ח
   {"symbol": "USDILS=X", "name": "דולר לשקל", "type": "מטח", "destination": "15/1"},
   {"symbol": "EURILS=X", "name": "אירו לשקל", "type": "מטח", "destination": "15/2"},
   {"symbol": "GBPILS=X", "name": "פאונד לשקל", "type": "מטח", "destination": "15/3"},
   {"symbol": "JPYILS=X", "name": "ין לשקל", "type": "מטח", "destination": "15/4"},
   {"symbol": "CHFILS=X", "name": "פרנק שוויצרי לשקל", "type": "מטח", "destination": "15/5"},
 
-  # 🟤 סחורות
   {"symbol": "CL=F", "name": "נפט", "type": "אנרגיה", "destination": "16/1"},
   {"symbol": "GC=F", "name": "זהב", "type": "מתכת יקרה", "destination": "16/2"},
   {"symbol": "SI=F", "name": "כסף", "type": "מתכת יקרה", "destination": "16/3"},
   {"symbol": "ZC=F", "name": "תירס", "type": "סחורה חקלאית", "destination": "16/4"},
-  {"symbol": "KC=F", "name": "קפה", "type": "סחורה חקלאית", "destination": "16/5"},
+  {"symbol": "KC=F", "name": "קפה", "type": "סחורה חקלאית", "destination": "16/5"}
 ]
-
-with open("stock_items.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
