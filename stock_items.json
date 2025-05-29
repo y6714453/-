@@ -1,13 +1,11 @@
 [
-  // 🟢 מדדים
-  { "symbol": "^GSPC", "name": "אס אנד פי חמש מאות", "type": "index", "target_path": "ivr2/1/1/" },
-  { "symbol": "^IXIC", "name": "נאסדק", "type": "index", "target_path": "ivr2/1/2/" },
-  { "symbol": "^DJI", "name": "דאו ג'ונס", "type": "index", "target_path": "ivr2/1/3/" },
-  { "symbol": "^N225", "name": "ניקיי היפני", "type": "index", "target_path": "ivr2/1/4/" },
-  { "symbol": "^GDAXI", "name": "דאקס הגרמני", "type": "index", "target_path": "ivr2/1/5/" },
-  { "symbol": "^TA35.TA", "name": "תל אביב שלושים וחמש", "type": "index", "target_path": "ivr2/1/6/" },
+  { "symbol": "^GSPC", "name": "אֵס אֵנְד פִּי חָמֵש מֵאוֹת", "type": "index", "target_path": "ivr2/1/1/" },
+  { "symbol": "^IXIC", "name": "נָאסְדָק", "type": "index", "target_path": "ivr2/1/2/" },
+  { "symbol": "^DJI", "name": "דָאוֹ ג'ונְס", "type": "index", "target_path": "ivr2/1/3/" },
+  { "symbol": "^N225", "name": "נִיקֵיי הָיָפָּנִי", "type": "index", "target_path": "ivr2/1/4/" },
+  { "symbol": "^GDAXI", "name": "דֹאקְס הָגֵרְמָנִי", "type": "index", "target_path": "ivr2/1/5/" },
+  { "symbol": "^TA35.TA", "name": "תֵל אָבֱיב שְלוֹשִים וֵחָמֵש", "type": "index", "target_path": "ivr2/1/6/" },
 
-  // 🟡 סקטורים בארה"ב
   { "symbol": "XLK", "name": "טכנולוגיה", "type": "sector", "target_path": "ivr2/2/1/" },
   { "symbol": "XLV", "name": "בריאות", "type": "sector", "target_path": "ivr2/2/2/" },
   { "symbol": "XLF", "name": "פיננסים", "type": "sector", "target_path": "ivr2/2/3/" },
@@ -20,33 +18,28 @@
   { "symbol": "XLC", "name": "תקשורת", "type": "sector", "target_path": "ivr2/2/10/" },
   { "symbol": "XLB", "name": "חומרי גלם", "type": "sector", "target_path": "ivr2/2/11/" },
 
-  // 🔵 מניות אמריקאיות
-  { "symbol": "NVDA", "name": "אנבידיה", "type": "stock_us", "target_path": "ivr2/3/1/" },
-  { "symbol": "AAPL", "name": "אפל", "type": "stock_us", "target_path": "ivr2/3/2/" },
-  { "symbol": "TSLA", "name": "טסלה", "type": "stock_us", "target_path": "ivr2/3/3/" },
-  { "symbol": "AMZN", "name": "אמאזון", "type": "stock_us", "target_path": "ivr2/3/4/" },
-  { "symbol": "MSFT", "name": "מייקרוסופט", "type": "stock_us", "target_path": "ivr2/3/5/" },
-  { "symbol": "META", "name": "מטא", "type": "stock_us", "target_path": "ivr2/3/6/" },
+  { "symbol": "NVDA", "name": "אֵנְבִידְיָה", "type": "stock_us", "target_path": "ivr2/3/1/" },
+  { "symbol": "AAPL", "name": "אָפֵּל", "type": "stock_us", "target_path": "ivr2/3/2/" },
+  { "symbol": "TSLA", "name": "טֵסְלָה", "type": "stock_us", "target_path": "ivr2/3/3/" },
+  { "symbol": "AMZN", "name": "אָמָאזוֹן", "type": "stock_us", "target_path": "ivr2/3/4/" },
+  { "symbol": "MSFT", "name": "מָיְיקְרוֹסוֹפְט", "type": "stock_us", "target_path": "ivr2/3/5/" },
+  { "symbol": "META", "name": "מֵטָא", "type": "stock_us", "target_path": "ivr2/3/6/" },
 
-  // 🔵 מניות ישראליות
-  { "symbol": "TEVA.TA", "name": "טבע", "type": "stock_il", "target_path": "ivr2/3/7/" },
-  { "symbol": "OPL.TA", "name": "אופקו", "type": "stock_il", "target_path": "ivr2/3/8/" },
-  { "symbol": "ISL.TA", "name": "ישראכרט", "type": "stock_il", "target_path": "ivr2/3/9/" },
-  { "symbol": "LEUM.TA", "name": "בנק לאומי", "type": "stock_il", "target_path": "ivr2/3/10/" },
+  { "symbol": "TEVA.TA", "name": "טֵבָע", "type": "stock_il", "target_path": "ivr2/3/7/" },
+  { "symbol": "OPL.TA", "name": "ֹאוֹפקו", "type": "stock_il", "target_path": "ivr2/3/8/" },
+  { "symbol": "ISL.TA", "name": "יִשְרָאכָּרְט", "type": "stock_il", "target_path": "ivr2/3/9/" },
+  { "symbol": "LEUM.TA", "name": "בָנְק לֵאוּמִי", "type": "stock_il", "target_path": "ivr2/3/10/" },
 
-  // 🟣 קריפטו
-  { "symbol": "BTC-USD", "name": "ביטקוין", "type": "crypto", "target_path": "ivr2/4/1/" },
-  { "symbol": "ETH-USD", "name": "אתריום", "type": "crypto", "target_path": "ivr2/4/2/" },
-  { "symbol": "SOL-USD", "name": "סולאנה", "type": "crypto", "target_path": "ivr2/4/3/" },
-  { "symbol": "BNB-USD", "name": "בינאנס קוין", "type": "crypto", "target_path": "ivr2/4/4/" },
+  { "symbol": "BTC-USD", "name": "בִּיטְקוֹיְן", "type": "crypto", "target_path": "ivr2/4/1/" },
+  { "symbol": "ETH-USD", "name": "אִתֵרְיוּם", "type": "crypto", "target_path": "ivr2/4/2/" },
+  { "symbol": "SOL-USD", "name": "סוֹלָאנָה", "type": "crypto", "target_path": "ivr2/4/3/" },
+  { "symbol": "BNB-USD", "name": "בָּיְנָאנְס קוֹיְן", "type": "crypto", "target_path": "ivr2/4/4/" },
 
-  // 💱 שערי מט"ח
   { "symbol": "USDILS=X", "name": "דולר אמריקאי", "type": "forex", "target_path": "ivr2/5/1/" },
   { "symbol": "EURILS=X", "name": "אירו", "type": "forex", "target_path": "ivr2/5/2/" },
   { "symbol": "GBPILS=X", "name": "לירה שטרלינג", "type": "forex", "target_path": "ivr2/5/3/" },
   { "symbol": "JPYILS=X", "name": "ין יפני", "type": "forex", "target_path": "ivr2/5/4/" },
 
-  // 🟤 סחורות
   { "symbol": "GC=F", "name": "זהב", "type": "commodity", "target_path": "ivr2/6/1/" },
   { "symbol": "SI=F", "name": "כסף", "type": "commodity", "target_path": "ivr2/6/2/" },
   { "symbol": "CL=F", "name": "נפט גולמי", "type": "commodity", "target_path": "ivr2/6/3/" },
