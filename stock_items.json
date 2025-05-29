@@ -1,0 +1,14 @@
+[
+  {
+    "symbol": "BTC-USD",
+    "name": "בִּיטְקוֹיְן",
+    "type": "crypto",
+    "target_path": "ivr2:/8/"
+  },
+  {
+    "symbol": "NVDA",
+    "name": "אֶנְבִּידְיָה",
+    "type": "stock_us",
+    "target_path": "ivr2:/7/"
+  }
+]
