@@ -2,77 +2,31 @@ import edge_tts
 import asyncio
 import subprocess
 import requests
-import os
+import json
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import time
+import os
 
-# 🔄 שליפת טוקן מעודכן במידת הצורך
-def get_token():
-    try:
-        res = requests.get("https://www.call2all.co.il/ym/api/Login?username=0733181201&password=6714453", timeout=10)
-        token = res.json().get("token")
-        if token:
-            print("🔑 טוקן חדש נשלף בהצלחה")
-            return token
-        else:
-            print("❌ לא הצליח לשאוב טוקן")
-    except Exception as e:
-        print("❌ שגיאה בשליפת טוקן:", e)
-    return None
+# 🟡 טוקן קבוע (מתעדכן אם צריך)
+token = '2yqvFAr7E9rVPGyk'
 
-# 📤 העלאה לימות המשיח
-def upload_to_yemot(wav_path, target_path, token):
-    try:
-        m = MultipartEncoder(
-            fields={
-                'token': token,
-                'path': target_path + "000.wav",
-                'upload': ("000.wav", open(wav_path, 'rb'), 'audio/wav')
-            }
-        )
-        response = requests.post(
-            'https://www.call2all.co.il/ym/api/UploadFile',
-            data=m,
-            headers={'Content-Type': m.content_type}
-        )
-        if 'token' in response.text and 'invalid' in response.text.lower():
-            print("🔁 טוקן לא תקף – מנסה לשלוף חדש...")
-            new_token = get_token()
-            if new_token:
-                upload_to_yemot(wav_path, target_path, new_token)
-        elif 'OK' in response.text:
-            print(f"✅ הקובץ הועלה בהצלחה ל־{target_path}")
-        else:
-            print(f"❌ שגיאה בהעלאה: {response.text}")
-    except Exception as e:
-        print("❌ שגיאה בהעלאה לימות:", e)
+def refresh_token_if_needed():
+    global token
+    test_upload = requests.post(
+        'https://www.call2all.co.il/ym/api/UploadFile',
+        data={'token': token, 'path': 'ivr2:/test', 'upload': ('test.wav', b'abc', 'audio/wav')}
+    )
+    if 'User not found or token expired' in test_upload.text:
+        print("♻️ טוקן לא תקין – מנסה לשלוף חדש...")
+        try:
+            response = requests.get("https://www.call2all.co.il/ym/api/Login?username=0733181201&password=6714453")
+            token = response.json().get("token")
+            print("✅ טוקן עודכן:", token)
+        except:
+            print("❌ שגיאה בשליפת טוקן חדש")
 
-# 🔢 המרה של מספר למילים
-def spell_price(p):
-    p = round(p)
-    th = p // 1000
-    r = p % 1000
-    if th == 0:
-        return f"{r}"
-    elif th == 1:
-        return f"אלף ו{r}" if r else "אלף"
-    elif th == 2:
-        return f"אלפיים ו{r}" if r else "אלפיים"
-    else:
-        return f"{th} אלף ו{r}" if r else f"{th} אלף"
-
-# 🧠 חישוב שינויים
-def format_change(current, previous):
-    if previous is None or previous == 0:
-        return "אין נתון זמין"
-    change = ((current - previous) / previous) * 100
-    sign = "עלייה" if change > 0 else "ירידה" if change < 0 else "שינוי אפסי"
-    abs_change = abs(change)
-    change_text = "אחוז" if round(abs_change, 2) == 1.00 else f"{abs_change:.2f}".replace(".", " נקודה ") + " אחוז"
-    return f"{sign} של {change_text}"
-
-# 🔄 שליפת נתונים מ-Yahoo לפי סמל
-def get_text(name, symbol, type_):
+# 🔄 פונקציית שליפת נתונים
+def get_yahoo_text(symbol, name, item_type):
     try:
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=6mo&interval=1d"
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -99,6 +53,28 @@ def get_text(name, symbol, type_):
         price_week = closest_price(start_of_week)
         price_year = closest_price(start_of_year)
 
+        def format_change(current, previous):
+            if previous is None or previous == 0:
+                return "אין נתון זמין"
+            change = ((current - previous) / previous) * 100
+            sign = "עלייה" if change > 0 else "ירידה" if change < 0 else "שינוי אפסי"
+            abs_change = abs(change)
+            change_text = f"{abs_change:.2f}".replace(".", " נקודה ") + " אחוז"
+            return f"{sign} של {change_text}"
+
+        def spell_price(p):
+            p = round(p)
+            th = p // 1000
+            r = p % 1000
+            if th == 0:
+                return f"{r}"
+            elif th == 1:
+                return f"אלף ו{r}" if r else "אלף"
+            elif th == 2:
+                return f"אלפיים ו{r}" if r else "אלפיים"
+            else:
+                return f"{th} אלף ו{r}" if r else f"{th} אלף"
+
         price_txt = spell_price(current_price)
         change_day = format_change(current_price, price_day)
         change_week = format_change(current_price, price_week)
@@ -110,44 +86,79 @@ def get_text(name, symbol, type_):
             abs_diff = abs(diff)
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
-        if type_ == "crypto":
-            return f"ה{ name } עומד כעת על { price_txt } דולר. מאז תחילת היום נרשמה { change_day }. מתחילת השבוע נרשמה { change_week }. מתחילת השנה נרשמה { change_year }. המחיר הנוכחי רחוק מהשיא ב{ dist_txt }."
-        elif type_ == "stock_us":
-            return f"מניית { name } נסחרת כעת בשווי של { price_txt } דולר. מאז תחילת היום נרשמה { change_day }. מתחילת השבוע נרשמה { change_week }. מתחילת השנה נרשמה { change_year }. המחיר הנוכחי רחוק מהשיא ב{ dist_txt }."
+        # ניסוח לפי סוג
+        if item_type == "crypto":
+            text = f"ה{ name } עומד כעת על {price_txt} דולר. "
+        elif item_type == "stock_us":
+            text = f"מניית { name } נסחרת כעת בשווי של {price_txt} דולר. "
+        elif item_type == "stock_il":
+            text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         else:
-            return "סוג לא נתמך כרגע."
+            text = f"{ name } בשווי {price_txt}."
+
+        text += (
+            f"מאז תחילת היום נרשמה {change_day}. "
+            f"מתחילת השבוע נרשמה {change_week}. "
+            f"מתחילת השנה נרשמה {change_year}. "
+            f"המחיר הנוכחי רחוק מהשיא ב{dist_txt}."
+        )
+        return text
 
     except Exception as e:
         print("❌ שגיאה בשליפת נתונים:", e)
-        return f"{name} עומדת כעת על נתון לא זמין."
+        return f"{name} - נתון לא זמין כרגע."
 
 # 🎙 יצירת MP3
 async def create_mp3(text, filename):
-    print(f"🎙️ יוצר MP3...")
     tts = edge_tts.Communicate(text, "he-IL-AvriNeural")
-    await tts.save(f"{filename}.mp3")
+    await tts.save(filename)
 
-# 🎚 המרה ל־WAV
-def convert_to_wav(mp3_path, wav_path):
+# 🎛 המרה ל-WAV
+def convert_to_wav(mp3_file, wav_file):
     subprocess.run([
-        "ffmpeg", "-y", "-i", mp3_path,
-        "-ac", "1", "-ar", "8000", "-sample_fmt", "s16",
-        wav_path
+        "ffmpeg", "-y",
+        "-i", mp3_file,
+        "-ac", "1",
+        "-ar", "8000",
+        "-sample_fmt", "s16",
+        wav_file
     ])
 
-# ▶️ הפעלה
-async def main():
-    items = [
-        {"name": "ביטקוין", "symbol": "BTC-USD", "type": "crypto", "target_path": "ivr2:/8/"},
-        {"name": "אנבידיה", "symbol": "NVDA", "type": "stock_us", "target_path": "ivr2:/7/"}
-    ]
+# 📤 העלאה לימות
+def upload_to_yemot(wav_file, path):
+    m = MultipartEncoder(
+        fields={
+            'token': token,
+            'path': path + "000.wav",
+            'upload': (wav_file, open(wav_file, 'rb'), 'audio/wav')
+        }
+    )
+    response = requests.post(
+        'https://www.call2all.co.il/ym/api/UploadFile',
+        data=m,
+        headers={'Content-Type': m.content_type}
+    )
+    if response.status_code == 200 and 'OK' in response.text:
+        print(f"✅ הועלה בהצלחה ל־{path}")
+    else:
+        print("❌ שגיאה בהעלאה:", response.text)
 
-    token = get_token()
+# ▶️ הרצה עיקרית
+async def main():
+    refresh_token_if_needed()
+
+    with open("stock_items.json", encoding="utf-8") as f:
+        items = json.load(f)
 
     for item in items:
-        text = get_text(item["name"], item["symbol"], item["type"])
-        await create_mp3(text, "000")
-        convert_to_wav("000.mp3", "000.wav")
-        upload_to_yemot("000.wav", item["target_path"], token)
+        print(f"🔄 מטפל ב־{item['name']} ({item['symbol']})")
+        text = get_yahoo_text(item['symbol'], item['name'], item['type'])
+
+        mp3_file = "temp.mp3"
+        wav_file = "temp.wav"
+
+        await create_mp3(text, mp3_file)
+        convert_to_wav(mp3_file, wav_file)
+        upload_to_yemot(wav_file, item['target_path'])
 
 asyncio.run(main())
