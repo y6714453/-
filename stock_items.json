@@ -1,42 +1,68 @@
-[
-  { "symbol": "^GSPC", "name": "מדד אס אנד פי 500", "destination": "1/1/1" },
-  { "symbol": "^NDX", "name": "מדד נאסדק 100", "destination": "1/1/2" },
-  { "symbol": "^DJI", "name": "מדד דאו ג'ונס", "destination": "1/1/3" },
-  { "symbol": "^RUT", "name": "מדד ראסל 2000", "destination": "1/1/4" },
-  { "symbol": "^TA125.TA", "name": "מדד תל אביב 125", "destination": "1/1/5" },
-  { "symbol": "^TA35.TA", "name": "מדד תל אביב 35", "destination": "1/1/6" },
-  { "symbol": "^GDAXI", "name": "מדד דאקס (אירופה)", "destination": "1/1/7" },
-  { "symbol": "^N225", "name": "מדד ניקיי 225 (יפן)", "destination": "1/1/8" },
-  { "symbol": "^STOXX50E", "name": "מדד יורוסטוקס 50", "destination": "1/1/9" },
+import json
 
-  { "symbol": "^XLV", "name": "סקטור בריאות", "destination": "1/2/1" },
-  { "symbol": "^XLF", "name": "סקטור פיננסים", "destination": "1/2/2" },
-  { "symbol": "^XLK", "name": "סקטור טכנולוגיה", "destination": "1/2/3" },
-  { "symbol": "^XLE", "name": "סקטור אנרגיה", "destination": "1/2/4" },
-  { "symbol": "^XLY", "name": "סקטור צריכה מחזורית", "destination": "1/2/5" },
-  { "symbol": "^XLP", "name": "סקטור צריכה בסיסית", "destination": "1/2/6" },
-  { "symbol": "^XLU", "name": "סקטור תשתיות", "destination": "1/2/7" },
-  { "symbol": "^XLRE", "name": "סקטור נדל\"ן", "destination": "1/2/8" },
-  { "symbol": "^XLC", "name": "סקטור תקשורת", "destination": "1/2/9" },
-  { "symbol": "^XLI", "name": "סקטור תעשייה", "destination": "1/2/10" },
-  { "symbol": "^XLBS", "name": "סקטור בריאות ביוטכנולוגית", "destination": "1/2/11" },
+data = [
 
-  { "symbol": "AAPL", "name": "אפל", "destination": "1/3/1" },
-  { "symbol": "NVDA", "name": "אנבידיה", "destination": "1/3/2" },
-  { "symbol": "TSLA", "name": "טסלה", "destination": "1/3/3" },
+  # 🔵 מדדים עולמיים וישראליים
+  {"symbol": "^GSPC", "name": "אס אנד פי 500", "type": "מדד", "destination": "11/1"},
+  {"symbol": "^NDX", "name": "נאסדק 100", "type": "מדד", "destination": "11/2"},
+  {"symbol": "^DJI", "name": "דאו ג'ונס", "type": "מדד", "destination": "11/3"},
+  {"symbol": "^RUT", "name": "ראסל 2000", "type": "מדד", "destination": "11/4"},
+  {"symbol": "TA125.TA", "name": "תל אביב 125", "type": "מדד", "destination": "11/5"},
+  {"symbol": "TA35.TA", "name": "תל אביב 35", "type": "מדד", "destination": "11/6"},
+  {"symbol": "^GDAXI", "name": "דאקס", "type": "מדד", "destination": "11/7"},
+  {"symbol": "^N225", "name": "ניקיי", "type": "מדד", "destination": "11/8"},
+  {"symbol": "^FTSE", "name": "פוטסי 100", "type": "מדד", "destination": "11/9"},
+  {"symbol": "^STOXX50E", "name": "יורוסטוקס 50", "type": "מדד", "destination": "11/10"},
 
-  { "symbol": "BTC-USD", "name": "ביטקוין", "destination": "1/4/1" },
-  { "symbol": "ETH-USD", "name": "אתריום", "destination": "1/4/2" },
-  { "symbol": "TRUMP-USD", "name": "טראמפ קוין", "destination": "1/4/3" },
-  { "symbol": "XRP-USD", "name": "אקס אר פי", "destination": "1/4/4" },
-  { "symbol": "BNB-USD", "name": "ביננס קוין", "destination": "1/4/5" },
+  # 🟢 סקטורים
+  {"symbol": "^SP500-35", "name": "בריאות", "type": "מדד", "destination": "12/1"},
+  {"symbol": "^SP500-20", "name": "חומרים בסיסיים", "type": "מדד", "destination": "12/2"},
+  {"symbol": "^SP500-55", "name": "תעשייה", "type": "מדד", "destination": "12/3"},
+  {"symbol": "^SP500-60", "name": "טכנולוגיה", "type": "מדד", "destination": "12/4"},
+  {"symbol": "^SP500-25", "name": "אנרגיה", "type": "מדד", "destination": "12/5"},
+  {"symbol": "^SP500-10", "name": "נדל\"ן", "type": "מדד", "destination": "12/6"},
+  {"symbol": "^SP500-30", "name": "פיננסים", "type": "מדד", "destination": "12/7"},
+  {"symbol": "^SP500-45", "name": "צריכה מחזורית", "type": "מדד", "destination": "12/8"},
+  {"symbol": "^SP500-50", "name": "צריכה לא מחזורית", "type": "מדד", "destination": "12/9"},
+  {"symbol": "^SP500-40", "name": "תקשורת", "type": "מדד", "destination": "12/10"},
+  {"symbol": "^SP500-15", "name": "שירותים לצרכן", "type": "מדד", "destination": "12/11"},
 
-  { "symbol": "CL=F", "name": "נפט", "destination": "1/5/1" },
-  { "symbol": "GC=F", "name": "זהב", "destination": "1/5/2" },
-  { "symbol": "SI=F", "name": "כסף", "destination": "1/5/3" },
-  { "symbol": "HG=F", "name": "נחושת", "destination": "1/5/4" },
-  { "symbol": "ZC=F", "name": "תירס", "destination": "1/5/5" },
+  # 🔴 מניות פופולריות לדוגמה
+  {"symbol": "AAPL", "name": "אפל", "type": "מניה אמריקאית", "destination": "13/1"},
+  {"symbol": "NVDA", "name": "אנבידיה", "type": "מניה אמריקאית", "destination": "13/2"},
+  {"symbol": "TSLA", "name": "טסלה", "type": "מניה אמריקאית", "destination": "13/3"},
+  {"symbol": "AMZN", "name": "אמזון", "type": "מניה אמריקאית", "destination": "13/4"},
+  {"symbol": "GOOG", "name": "גוגל", "type": "מניה אמריקאית", "destination": "13/5"},
+  {"symbol": "MSFT", "name": "מיקרוסופט", "type": "מניה אמריקאית", "destination": "13/6"},
+  {"symbol": "META", "name": "פייסבוק", "type": "מניה אמריקאית", "destination": "13/7"},
+  {"symbol": "BABA", "name": "עליבאבא", "type": "מניה אמריקאית", "destination": "13/8"},
+  {"symbol": "NFLX", "name": "נטפליקס", "type": "מניה אמריקאית", "destination": "13/9"},
+  {"symbol": "INTC", "name": "אינטל", "type": "מניה אמריקאית", "destination": "13/10"},
 
-  { "symbol": "USDILS=X", "name": "דולר לשקל", "destination": "1/6/1" },
-  { "symbol": "EURILS=X", "name": "אירו לשקל", "destination": "1/6/2" }
+  # 🟣 קריפטו
+  {"symbol": "BTC-USD", "name": "ביטקוין", "type": "קריפטו", "destination": "14/1"},
+  {"symbol": "ETH-USD", "name": "אתריום", "type": "קריפטו", "destination": "14/2"},
+  {"symbol": "TRUMP-USD", "name": "טראמפ קוין", "type": "קריפטו", "destination": "14/3"},
+  {"symbol": "XRP-USD", "name": "אקס אר פי", "type": "קריפטו", "destination": "14/4"},
+  {"symbol": "BNB-USD", "name": "ביננס קוין", "type": "קריפטו", "destination": "14/5"},
+  {"symbol": "SOL-USD", "name": "סולאנה", "type": "קריפטו", "destination": "14/6"},
+  {"symbol": "DOGE-USD", "name": "דוגקוין", "type": "קריפטו", "destination": "14/7"},
+  {"symbol": "AVAX-USD", "name": "אוואלאנש", "type": "קריפטו", "destination": "14/8"},
+
+  # 🔶 מט"ח
+  {"symbol": "USDILS=X", "name": "דולר לשקל", "type": "מטח", "destination": "15/1"},
+  {"symbol": "EURILS=X", "name": "אירו לשקל", "type": "מטח", "destination": "15/2"},
+  {"symbol": "GBPILS=X", "name": "פאונד לשקל", "type": "מטח", "destination": "15/3"},
+  {"symbol": "JPYILS=X", "name": "ין לשקל", "type": "מטח", "destination": "15/4"},
+  {"symbol": "CHFILS=X", "name": "פרנק שוויצרי לשקל", "type": "מטח", "destination": "15/5"},
+
+  # 🟤 סחורות
+  {"symbol": "CL=F", "name": "נפט", "type": "אנרגיה", "destination": "16/1"},
+  {"symbol": "GC=F", "name": "זהב", "type": "מתכת יקרה", "destination": "16/2"},
+  {"symbol": "SI=F", "name": "כסף", "type": "מתכת יקרה", "destination": "16/3"},
+  {"symbol": "ZC=F", "name": "תירס", "type": "סחורה חקלאית", "destination": "16/4"},
+  {"symbol": "KC=F", "name": "קפה", "type": "סחורה חקלאית", "destination": "16/5"},
 ]
+
+with open("stock_items.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
