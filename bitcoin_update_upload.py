@@ -100,7 +100,7 @@ def get_yahoo_text(symbol, name, item_type):
         elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         elif item_type == "index":
-            text = f"המדד { name } עומד כעת על {price_txt} נקודות. "
+            text = f"מדד ה { name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "sector":
             text = f"סקטור ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "commodity":
