@@ -64,16 +64,23 @@ def get_yahoo_text(symbol, name, item_type):
 
         def spell_price(p):
             p = round(p)
-            th = p // 1000
-            r = p % 1000
-            if th == 0:
-                return f"{r}"
-            elif th == 1:
-                return f"אלף ו{r}" if r else "אלף"
-            elif th == 2:
-                return f"אלפיים ו{r}" if r else "אלפיים"
-            else:
-                return f"{th} אלף ו{r}" if r else f"{th} אלף"
+            parts = []
+            thousands = p // 1000
+            hundreds = (p % 1000) // 100
+            tens_units = p % 100
+
+            if thousands > 0:
+                if thousands == 1:
+                    parts.append("אלף")
+                elif thousands == 2:
+                    parts.append("אלפיים")
+                else:
+                    parts.append(f"{thousands} אלף")
+            if hundreds > 0:
+                parts.append(f"{hundreds} מאות")
+            if tens_units > 0:
+                parts.append(f"{tens_units}")
+            return " ו".join(parts)
 
         price_txt = spell_price(current_price)
         change_day = format_change(current_price, price_day)
@@ -86,19 +93,24 @@ def get_yahoo_text(symbol, name, item_type):
             abs_diff = abs(diff)
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
-        # ניסוח לפי סוג
-        if item_type == "קריפטו":
+        # 📝 ניסוח מותאם לפי סוג
+        if item_type == "crypto":
             text = f"ה{ name } עומד כעת על {price_txt} דולר. "
-        elif item_type == "מניה אמריקאית":
+        elif item_type == "stock_us":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} דולר. "
-        elif item_type == "מניה ישראלית":
+        elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
-        elif item_type == "מטח":
-            text = f"שער החליפין של { name } עומד על {price_txt} שקלים. "
-        elif item_type in ["מדד", "אנרגיה", "מתכת יקרה", "סחורה חקלאית"]:
-            text = f"המדד { name } עומד כעת על {price_txt}. "
+        elif item_type == "index":
+            text = f"המדד { name } עומד כעת על {price_txt} נקודות. "
+        elif item_type == "sector":
+            text = f"סקטור ה{ name } עומד כעת על {price_txt} נקודות. "
+        elif item_type == "commodity":
+            unit = "לאונקיה" if "זהב" in name or "כסף" in name else "לטון"
+            text = f"ה{ name } עומד כעת על {price_txt} דולר ל{unit}. "
+        elif item_type == "forex":
+            text = f"שער ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
         else:
-            text = f"{ name } בשווי {price_txt}."
+            text = f"{ name } עומד כעת על {price_txt}."
 
         text += (
             f"מאז תחילת היום נרשמה {change_day}. "
