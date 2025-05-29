@@ -87,12 +87,16 @@ def get_yahoo_text(symbol, name, item_type):
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
         # ניסוח לפי סוג
-        if item_type == "crypto":
+        if item_type == "קריפטו":
             text = f"ה{ name } עומד כעת על {price_txt} דולר. "
-        elif item_type == "stock_us":
+        elif item_type == "מניה אמריקאית":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} דולר. "
-        elif item_type == "stock_il":
+        elif item_type == "מניה ישראלית":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
+        elif item_type == "מטח":
+            text = f"שער החליפין של { name } עומד על {price_txt} שקלים. "
+        elif item_type in ["מדד", "אנרגיה", "מתכת יקרה", "סחורה חקלאית"]:
+            text = f"המדד { name } עומד כעת על {price_txt}. "
         else:
             text = f"{ name } בשווי {price_txt}."
 
