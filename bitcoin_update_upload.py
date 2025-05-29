@@ -93,7 +93,6 @@ def get_yahoo_text(symbol, name, item_type):
             abs_diff = abs(diff)
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
-        # 📝 ניסוח מותאם לפי סוג
         if item_type == "crypto":
             text = f"ה{ name } עומד כעת על {price_txt} דולר. "
         elif item_type == "stock_us":
@@ -142,22 +141,29 @@ def convert_to_wav(mp3_file, wav_file):
 
 # 📤 העלאה לימות
 def upload_to_yemot(wav_file, path):
-    m = MultipartEncoder(
-        fields={
-            'token': token,
-            'path': path + "000.wav",
-            'upload': (wav_file, open(wav_file, 'rb'), 'audio/wav')
-        }
-    )
-    response = requests.post(
-        'https://www.call2all.co.il/ym/api/UploadFile',
-        data=m,
-        headers={'Content-Type': m.content_type}
-    )
+    if not os.path.exists(wav_file):
+        print(f"❌ הקובץ {wav_file} לא קיים. לא ניתן להעלות.")
+        return
+
+    with open(wav_file, 'rb') as f:
+        m = MultipartEncoder(
+            fields={
+                'token': token,
+                'path': path + "000.wav",
+                'upload': (wav_file, f, 'audio/wav')
+            }
+        )
+        response = requests.post(
+            'https://www.call2all.co.il/ym/api/UploadFile',
+            data=m,
+            headers={'Content-Type': m.content_type}
+        )
+    print(f"🔍 קוד תגובה: {response.status_code}")
+    print(f"🧾 טקסט תגובה: {response.text}")
     if response.status_code == 200 and 'OK' in response.text:
         print(f"✅ הועלה בהצלחה ל־{path}")
     else:
-        print("❌ שגיאה בהעלאה:", response.text)
+        print("❌ שגיאה בהעלאה לימות")
 
 # ▶️ הרצה עיקרית
 async def main():
