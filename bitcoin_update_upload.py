@@ -6,7 +6,7 @@ import json
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import time
 import os
-#
+
 # 🟡 טוקן קבוע (מתעדכן אם צריך)
 token = '4SQ0CWuEWqiQf942'
 
@@ -25,7 +25,53 @@ def refresh_token_if_needed():
         except:
             print("❌ שגיאה בשליפת טוקן חדש")
 
-# 🔄 פונקציית שליפת נתונים
+# 🔡 המרת מספרים למילים תקניות בעברית
+def number_to_words(n):
+    units = ["", "אחת", "שתיים", "שלוש", "ארבע", "חמש", "שש", "שבע", "שמונה", "תשע"]
+    thousands_prefix = ["", "אלף", "אלפיים", "שלושת", "ארבעת", "חמשת", "ששת", "שבעת", "שמונת", "תשעת"]
+    tens = ["", "עשר", "עשרים", "שלושים", "ארבעים", "חמישים", "שישים", "שבעים", "שמונים", "תשעים"]
+    teens = ["עשר", "אחת עשרה", "שתים עשרה", "שלוש עשרה", "ארבע עשרה", "חמש עשרה",
+             "שש עשרה", "שבע עשרה", "שמונה עשרה", "תשע עשרה"]
+
+    parts = []
+
+    thousands = n // 1000
+    hundreds = (n % 1000) // 100
+    tens_units = n % 100
+
+    if thousands == 1:
+        parts.append("אלף")
+    elif thousands == 2:
+        parts.append("אלפיים")
+    elif thousands > 2:
+        prefix = thousands_prefix[thousands] if thousands < len(thousands_prefix) else f"{units[thousands]}ת"
+        parts.append(f"{prefix} אלפים")
+
+    if hundreds == 1:
+        parts.append("מאה")
+    elif hundreds == 2:
+        parts.append("מאתיים")
+    elif hundreds > 0:
+        parts.append(f"{units[hundreds]} מאות")
+
+    if 10 <= tens_units <= 19:
+        parts.append(teens[tens_units - 10])
+    else:
+        t = tens_units // 10
+        u = tens_units % 10
+        if t > 0 and u > 0:
+            parts.append(f"{tens[t]} ו{units[u]}")
+        elif t > 0:
+            parts.append(tens[t])
+        elif u > 0:
+            parts.append(units[u])
+
+    return " ו".join(parts)
+
+def spell_price(p):
+    return number_to_words(round(p))
+
+# 🔄 שליפת נתוני שוק
 def get_yahoo_text(symbol, name, item_type):
     try:
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=6mo&interval=1d"
@@ -62,26 +108,6 @@ def get_yahoo_text(symbol, name, item_type):
             change_text = f"{abs_change:.2f}".replace(".", " נקודה ") + " אחוז"
             return f"{sign} של {change_text}"
 
-        def spell_price(p):
-            p = round(p)
-            parts = []
-            thousands = p // 1000
-            hundreds = (p % 1000) // 100
-            tens_units = p % 100
-
-            if thousands > 0:
-                if thousands == 1:
-                    parts.append("אלף")
-                elif thousands == 2:
-                    parts.append("אלפיים")
-                else:
-                    parts.append(f"{thousands} אלף")
-            if hundreds > 0:
-                parts.append(f"{hundreds} מאות")
-            if tens_units > 0:
-                parts.append(f"{tens_units}")
-            return " ו".join(parts)
-
         price_txt = spell_price(current_price)
         change_day = format_change(current_price, price_day)
         change_week = format_change(current_price, price_week)
@@ -100,7 +126,7 @@ def get_yahoo_text(symbol, name, item_type):
         elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         elif item_type == "index":
-            text = f"מדד ה { name } עומד כעת על {price_txt} נקודות. "
+            text = f"מדד ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "sector":
             text = f"סקטור ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "commodity":
@@ -112,7 +138,7 @@ def get_yahoo_text(symbol, name, item_type):
             text = f"{ name } עומד כעת על {price_txt}."
 
         text += (
-            f"מאז תחילת היום נרשמה {change_day}. "
+            f"מתחילת היום נרשמה {change_day}. "
             f"מתחילת השבוע נרשמה {change_week}. "
             f"מתחילת השנה נרשמה {change_year}. "
             f"המחיר הנוכחי רחוק מהשיא ב{dist_txt}."
