@@ -27,11 +27,11 @@ def refresh_token_if_needed():
 
 # 🔡 המרת מספרים למילים תקניות בעברית
 def number_to_words(n):
-    units = ["", "אחת", "שתיים", "שלוש", "ארבע", "חמש", "שש", "שבע", "שמונה", "תשע"]
-    thousands_prefix = ["", "אלף", "אלפיים", "שלושת", "ארבעת", "חמשת", "ששת", "שבעת", "שמונת", "תשעת"]
+    units = ["", "אֵחָד", "שְְתָיִים", "שָלוֹש", "אָרְבָּע", "חָמֵש", "שְש", "שֵבָע", "שְמוֹנֵה", "תֵשָע"]
+    thousands_prefix = ["", "אֵלֵף", "אָלְפָּיִים", "שְלוֹשֵת", "אָרְבָּעָת", "חָמֵשֵת", "שֵשֵת", "שְבָת", "שְמוֹנָת", "תְשָת"]
     tens = ["", "עשר", "עשרים", "שלושים", "ארבעים", "חמישים", "שישים", "שבעים", "שמונים", "תשעים"]
     teens = ["עשר", "אחת עשרה", "שתים עשרה", "שלוש עשרה", "ארבע עשרה", "חמש עשרה",
-             "שש עשרה", "שבע עשרה", "שמונה עשרה", "תשע עשרה"]
+             "שש עשרה", "שבע עשרה", "שמונה עשרה", "תְשָע עשרה"]
 
     parts = []
 
@@ -120,20 +120,20 @@ def get_yahoo_text(symbol, name, item_type):
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
         if item_type == "crypto":
-            text = f"ה{ name } עומד כעת על {price_txt} דולר. "
+            text = f"ָמָטְבֵּעָ ה{ name } עומד כעת על {price_txt} דולר. "
         elif item_type == "stock_us":
-            text = f"מניית { name } נסחרת כעת בשווי של {price_txt} דולר. "
+            text = f"מֵנָיָית { name } נסחרת כעת בשווי של {price_txt} דולר. "
         elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         elif item_type == "index":
-            text = f"מדד ה{ name } עומד כעת על {price_txt} נקודות. "
+            text = f"ָמָדָד ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "sector":
-            text = f"סקטור ה{ name } עומד כעת על {price_txt} נקודות. "
+            text = f"סֵקְטוֹר{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "commodity":
-            unit = "לאונקיה" if "זהב" in name or "כסף" in name else "לטון"
+            unit = "לֵאוֹנְקִיָה" if "זהב" in name or "כסף" in name else "לֵטוֹן"
             text = f"ה{ name } עומד כעת על {price_txt} דולר ל{unit}. "
         elif item_type == "forex":
-            text = f"שער ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
+            text = f"ָשָעָר ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
         else:
             text = f"{ name } עומד כעת על {price_txt}."
 
