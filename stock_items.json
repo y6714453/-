@@ -32,7 +32,7 @@
   { "symbol": "BTC-USD", "name": "בִּיטְקוֹיְן", "type": "crypto", "target_path": "ivr2:/1/4/1/" },
   { "symbol": "ETH-USD", "name": "אִתֵרְיוּם", "type": "crypto", "target_path": "ivr2:/1/4/2/" },
   { "symbol": "SOL-USD", "name": "סוֹלָאנָה", "type": "crypto", "target_path": "ivr2:/1/4/3/" },
-  { "symbol": "TRUMP-OFFICIAL-USD", "name": "טְרָמְפְּקוֹיְן", "type": "crypto", "target_path": "ivr2:/1/4/4/" },
+  { "symbol": "TRUMP35336-USD", "name": "טְרָמְפְּקוֹיְן", "type": "crypto", "target_path": "ivr2:/1/4/4/" },
   { "symbol": "BNB-USD", "name": "בָּיְנָאנְסקוֹיְן", "type": "crypto", "target_path": "ivr2:/1/4/5/" },
 
   { "symbol": "ILS=X", "name": "דוֹלָר אָמֵרִיקָאִי", "type": "forex", "target_path": "ivr2:/1/5/1/" },
