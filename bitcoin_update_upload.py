@@ -8,7 +8,7 @@ import time
 import os
 
 # 🟡 טוקן קבוע (מתעדכן אם צריך)
-token = '4SQ0CWuEWqiQf942'
+token = 'pyVGAX3ov7hprizQ'
 
 def refresh_token_if_needed():
     global token
@@ -26,13 +26,12 @@ def refresh_token_if_needed():
             print("❌ שגיאה בשליפת טוקן חדש")
 
 # 🔡 המרת מספרים למילים תקניות בעברית
-def number_to_words(n):
-    units = ["", "אֵחָד", "שְְתָיִים", "שָלוֹש", "אָרְבָּע", "חָמֵש", "שְש", "שֵבָע", "שְמוֹנֵה", "תֵשָע"]
-    thousands_prefix = ["", "אֵלֵף", "אָלְפָּיִים", "שְלוֹשֵת", "אָרְבָּעָת", "חָמֵשֵת", "שֵשֵת", "שְבָת", "שְמוֹנָת", "תְשָת"]
-    tens = ["", "עשר", "עשרים", "שלושים", "ארבעים", "חמישים", "שישים", "שבעים", "שמונים", "תשעים"]
-    teens = ["עשר", "אחת עשרה", "שתים עשרה", "שלוש עשרה", "ארבע עשרה", "חמש עשרה",
-             "שש עשרה", "שבע עשרה", "שמונה עשרה", "תְשָע עשרה"]
+units = ["", "אֵחָד", "שְתָיִים", "שָלוֹש", "אָרְבָּע", "חָמֵש", "שֵש", "שֵבַע", "שְמוֹנֶה", "תֵשַע"]
+thousands_prefix = ["", "אֶלֶף", "אָלְפַּיִים", "שְלוֹשֶת", "אַרְבַּעַת", "חֲמֵשֶת", "שֵשֶת", "שִבְעַת", "שְמוֹנַת", "תִשְעַת"]
+tens = ["", "עֶשֶר", "עֶשְרִים", "שְלוֹשִים", "אַרְבָּעִים", "חֲמִשִּים", "שִשִּים", "שִבְעִים", "שְמוֹנִים", "תִשְעִים"]
+teens = ["עֶשֶר", "אַחַת עֶשְרֵה", "שְׁתֵים עֶשְרֵה", "שְׁלוֹש עֶשְרֵה", "אַרְבַּע עֶשְרֵה", "חֲמֵש עֶשְרֵה", "שֵש עֶשְרֵה", "שֶבַע עֶשְרֵה", "שְׁמוֹנֶה עֶשְרֵה", "תֵשַע עֶשְרֵה"]
 
+def number_to_words(n):
     parts = []
 
     thousands = n // 1000
@@ -40,19 +39,19 @@ def number_to_words(n):
     tens_units = n % 100
 
     if thousands == 1:
-        parts.append("אלף")
+        parts.append("אֶלֶף")
     elif thousands == 2:
-        parts.append("אלפיים")
+        parts.append("אָלְפַּיִים")
     elif thousands > 2:
         prefix = thousands_prefix[thousands] if thousands < len(thousands_prefix) else f"{units[thousands]}ת"
-        parts.append(f"{prefix} אלפים")
+        parts.append(f"{prefix} אֲלָפִים")
 
     if hundreds == 1:
-        parts.append("מאה")
+        parts.append("מֵאָה")
     elif hundreds == 2:
-        parts.append("מאתיים")
+        parts.append("מָאתַיִים")
     elif hundreds > 0:
-        parts.append(f"{units[hundreds]} מאות")
+        parts.append(f"{units[hundreds]} מֵאוֹת")
 
     if 10 <= tens_units <= 19:
         parts.append(teens[tens_units - 10])
@@ -60,16 +59,27 @@ def number_to_words(n):
         t = tens_units // 10
         u = tens_units % 10
         if t > 0 and u > 0:
-            parts.append(f"{tens[t]} ו{units[u]}")
+            parts.append(f"{tens[t]} וְ{units[u]}")
         elif t > 0:
             parts.append(tens[t])
         elif u > 0:
             parts.append(units[u])
 
-    return " ו".join(parts)
+    return " ו".join(parts).replace(" ו", " וְ")
+
+def number_to_words_with_decimals(n):
+    integer_part = int(n)
+    decimal_part = int(round((n - integer_part) * 100))
+    if decimal_part == 0:
+        return number_to_words(integer_part)
+    return number_to_words(integer_part) + " נקודה " + number_to_words(decimal_part)
 
 def spell_price(p):
-    return number_to_words(round(p))
+    rounded = round(p, 2)
+    if rounded < 1000:
+        return number_to_words_with_decimals(rounded)
+    else:
+        return number_to_words(int(round(p)))
 
 # 🔄 שליפת נתוני שוק
 def get_yahoo_text(symbol, name, item_type):
@@ -120,20 +130,20 @@ def get_yahoo_text(symbol, name, item_type):
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
         if item_type == "crypto":
-            text = f"ָמָטְבֵּעָ ה{ name } עומד כעת על {price_txt} דולר. "
+            text = f"מַטְבֵּעַ ה{ name } עומד כעת על {price_txt} דולר. "
         elif item_type == "stock_us":
-            text = f"מֵנָיָית { name } נסחרת כעת בשווי של {price_txt} דולר. "
+            text = f"מֵנָיָה { name } נסחרת כעת בשווי של {price_txt} דולר. "
         elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         elif item_type == "index":
-            text = f"ָמָדָד ה{ name } עומד כעת על {price_txt} נקודות. "
+            text = f"מַדָּד ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "sector":
-            text = f"סֵקְטוֹר{ name } עומד כעת על {price_txt} נקודות. "
+            text = f"סֵקְטוֹר { name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "commodity":
             unit = "לֵאוֹנְקִיָה" if "זהב" in name or "כסף" in name else "לֵטוֹן"
             text = f"ה{ name } עומד כעת על {price_txt} דולר ל{unit}. "
         elif item_type == "forex":
-            text = f"ָשָעָר ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
+            text = f"שַעַר ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
         else:
             text = f"{ name } עומד כעת על {price_txt}."
 
@@ -194,6 +204,9 @@ def upload_to_yemot(wav_file, path):
 # ▶️ הרצה עיקרית
 async def main():
     refresh_token_if_needed()
+
+    # קביעת נתיב מדויק לקובץ
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     with open("stock_items.json", encoding="utf-8") as f:
         items = json.load(f)
