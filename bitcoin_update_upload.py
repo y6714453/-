@@ -130,17 +130,17 @@ def get_yahoo_text(symbol, name, item_type):
             dist_txt = f"{abs_diff:.2f}".replace(".", " נקודה ") + " אחוז"
 
         if item_type == "crypto":
-            text = f"מַטְבֵּעַ ה{ name } עומד כעת על {price_txt} דולר. "
+            text = f"מַטְבֵּעַ ה{ name } נִסְחָר כָּעֵת בֵּשָעָר שֵל {price_txt} דולר. "
         elif item_type == "stock_us":
-            text = f"מֵנָיָה { name } נסחרת כעת בשווי של {price_txt} דולר. "
+            text = f"מֵנָיָה { name } נִסְחֵרֵת כָּעֵת בשווי של {price_txt} דולר. "
         elif item_type == "stock_il":
             text = f"מניית { name } נסחרת כעת בשווי של {price_txt} שקלים חדשים. "
         elif item_type == "index":
-            text = f"מַדָּד ה{ name } עומד כעת על {price_txt} נקודות. "
+            text = f"מַדָד ה{ name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "sector":
             text = f"סֵקְטוֹר { name } עומד כעת על {price_txt} נקודות. "
         elif item_type == "commodity":
-            unit = "לֵאוֹנְקִיָה" if "זהב" in name or "כסף" in name else "לֵטוֹן"
+            unit = "אוֹנְקִיָה" if "זהב" in name or "כסף" in name else "טוֹן"
             text = f"ה{ name } עומד כעת על {price_txt} דולר ל{unit}. "
         elif item_type == "forex":
             text = f"שַעַר ה{ name } עומד כעת על {price_txt} שקלים חדשים. "
@@ -151,7 +151,7 @@ def get_yahoo_text(symbol, name, item_type):
             f"מתחילת היום נרשמה {change_day}. "
             f"מתחילת השבוע נרשמה {change_week}. "
             f"מתחילת השנה נרשמה {change_year}. "
-            f"המחיר הנוכחי רחוק מהשיא ב{dist_txt}."
+            f"המחיר הנוֹכֵחִי רחוק מהשיא ב{dist_txt}."
         )
         return text
 
