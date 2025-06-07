@@ -8,7 +8,7 @@ import time
 import os
 
 # 🟡 טוקן קבוע (מתעדכן אם צריך)
-token = 'pyVGAX3ov7hprizQ'
+token = '9wgFYwYnkXqziunQ'
 
 def refresh_token_if_needed():
     global token
